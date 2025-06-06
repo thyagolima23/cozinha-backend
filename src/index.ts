@@ -2,14 +2,15 @@ import express, { Request, Response } from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 
-const app = express();
+// Tipagem correta do app
+const app: express.Application = express();
 const prisma = new PrismaClient();
 const port: number = Number(process.env.PORT) || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// Tipagem dos campos esperados no corpo da requisição POST /votacao
+// Tipagem do corpo da requisição
 interface VotacaoRequestBody {
   id_prato: number;
   voto: boolean;
@@ -20,7 +21,6 @@ interface VotacaoRequestBody {
 app.post('/votacao', async (req: Request, res: Response) => {
   const { id_prato, voto, ip_usuario } = req.body as VotacaoRequestBody;
 
-  // Validação dos campos do corpo da requisição
   if (typeof id_prato !== 'number' || typeof voto !== 'boolean' || typeof ip_usuario !== 'string') {
     return res.status(400).json({ error: 'Campos inválidos' });
   }
