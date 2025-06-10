@@ -98,5 +98,5 @@ echo "🎉 Estrutura criada com sucesso! Rode 'yarn dev' para iniciar o servidor
 # 
 #sudo docker exec -it backend-app npx prisma db pull 
 #sudo docker exec -it backend-app npx prisma generate
-#sudo docker exect -it backend-app npx prisma migrate reset
+#sudo docker exec -it backend-app npx prisma migrate reset
 #sudo docker exec -it backend-app npx prisma db seed
