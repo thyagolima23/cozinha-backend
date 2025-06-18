@@ -12,7 +12,10 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
-    command: sh -c "npx prisma db pull --schema=prisma/schema.prisma && npx prisma generate --schema=prisma/schema.prisma && yarn dev"
+    command: sh -c "npx prisma db pull --schema=prisma/schema.prisma && \
+                    npx prisma generate --schema=prisma/schema.prisma && \
+                    npx prisma db seed && \
+                    yarn dev"
 
   db:
     image: postgres:17
@@ -26,6 +29,7 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 
 volumes:
   pgdata:
