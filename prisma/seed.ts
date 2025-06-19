@@ -4,6 +4,16 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 async function main() {
+  console.log('Limpando dados antigos...')
+
+  // Exclui os pratos primeiro (pois têm FK para cozinheira)
+  await prisma.prato_tb.deleteMany()
+
+  // Depois exclui as cozinheiras
+  await prisma.cozinheira_tb.deleteMany()
+
+  console.log('Inserindo novos dados...')
+
   // Cria 1 cozinheira
   const cozinheira = await prisma.cozinheira_tb.create({
     data: {
@@ -29,7 +39,7 @@ async function main() {
   // Começar da segunda-feira desta semana
   const hoje = new Date()
   const diaDaSemana = hoje.getDay()
-  const diasParaSegunda = diaDaSemana === 0 ? 1 : (1 - diaDaSemana) // se for domingo (0), pula para segunda
+  const diasParaSegunda = diaDaSemana === 0 ? 1 : (1 - diaDaSemana)
   const segunda = new Date(hoje)
   segunda.setDate(hoje.getDate() + diasParaSegunda)
   segunda.setHours(0, 0, 0, 0)
@@ -37,11 +47,9 @@ async function main() {
   for (let i = 0; i < pratos.length; i++) {
     const prato = pratos[i]
 
-    // Criar nova data para cada prato: segunda + i dias (até sexta ou mais se tiver mais pratos)
     const dataPrato = new Date(segunda)
     dataPrato.setDate(segunda.getDate() + i)
 
-    // Sorteia um turno
     const turno = turnos[Math.floor(Math.random() * turnos.length)]
 
     await prisma.prato_tb.create({
@@ -57,12 +65,12 @@ async function main() {
     })
   }
 
-  console.log('Seed inserido com datas e turnos variados com sucesso!')
+  console.log('Seed reinserido com sucesso!')
 }
 
 main()
   .then(() => prisma.$disconnect())
   .catch((e) => {
     console.error(e)
-    return prisma.$disconnect().finally(() => process.exit(1))
+    prisma.$disconnect().finally(() => process.exit(1))
   })

@@ -1,3 +1,4 @@
+version: "3.8"
 
 services:
   app:
@@ -11,14 +12,14 @@ services:
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/cantina
     volumes:
       - .:/app
-      - /app/node_modules
-    command: sh -c "npx prisma db pull --schema=prisma/schema.prisma && \
+    command: sh -c "sleep 5 && \
+                    npx prisma db pull --schema=prisma/schema.prisma && \
                     npx prisma generate --schema=prisma/schema.prisma && \
                     npx prisma db seed && \
                     yarn dev"
 
   db:
-    image: postgres:17
+    image: postgres:16
     container_name: postgres-db
     restart: always
     environment:
