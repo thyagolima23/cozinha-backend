@@ -2,15 +2,12 @@
   "compilerOptions": {
     "target": "ES6",
     "module": "commonjs",
-    "outDir": "./dist",
-    "rootDir": "./src",
+    "outDir": "./dist",  // Este caminho define a pasta de saída
+    "rootDir": "./src",  // Seu código fonte está em 'src'
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "src/tests/**/*.ts"]

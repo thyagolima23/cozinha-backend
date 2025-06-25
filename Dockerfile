@@ -12,20 +12,21 @@ RUN apt-get update && apt-get install -y \
 # Define o diretório de trabalho
 WORKDIR /app
 
-# Copia apenas arquivos de dependências
+# Copia arquivos de dependência primeiro para otimizar cache
 COPY package*.json ./
 
-# Instala dependências
+# Instala dependências (pode usar yarn ou npm)
 RUN yarn install
 
-# Copia o restante do código, incluindo schema.prisma e pasta prisma/
+# Copia o restante do projeto (código, prisma, etc.)
 COPY . .
 
-# Compila a aplicação
-#RUN yarn build
+# Gera o cliente Prisma e compila TypeScript
+RUN yarn prisma generate
+RUN yarn build
 
 # Expõe a porta usada pela aplicação
 EXPOSE 3000
 
-# Comando padrão para iniciar o app
-CMD ["yarn", "start"]
+# Comando para iniciar a aplicação
+CMD ["node", "dist/index.js"]

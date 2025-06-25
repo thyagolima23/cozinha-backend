@@ -1,4 +1,5 @@
 #!/bin/sh
+sudo chmod -R 777 dist
 
 echo "Running Prisma generate..."
 npx prisma generate
