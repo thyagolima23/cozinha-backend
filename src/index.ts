@@ -42,22 +42,29 @@ app.post('/votacao', async (req: Request, res: Response) => {
 // GET /votacao - retorna resultado dos votos do dia para cada prato
 app.get('/votacao', async (req: Request, res: Response) => {
   try {
-    const resultado = await prisma.$queryRawUnsafe<any[]>(`
-      SELECT
-        p.id_prato,
-        p.principal,
-        COUNT(CASE WHEN v.voto = TRUE THEN 1 END) AS votos_sim,
-        COUNT(CASE WHEN v.voto = FALSE THEN 1 END) AS votos_nao
-      FROM prato_tb p
-      LEFT JOIN votacao_tb v
-        ON p.id_prato = v.id_prato
-        AND DATE(v.data_voto) = CURRENT_DATE
-      WHERE DATE(p.dia) = CURRENT_DATE
-      GROUP BY p.id_prato, p.principal
-      ORDER BY p.id_prato
-    `);
+    interface ResultadoVotacao {
+      id_prato: number;
+      principal: string;
+      votos_sim: number;
+      votos_nao: number;
+    }
 
-    const resultadoConvertido = resultado.map(r => ({
+    const resultado = await prisma.$queryRawUnsafe<ResultadoVotacao[]>(`
+  SELECT
+    p.id_prato,
+    p.principal,
+    COUNT(CASE WHEN v.voto = TRUE THEN 1 END) AS votos_sim,
+    COUNT(CASE WHEN v.voto = FALSE THEN 1 END) AS votos_nao
+  FROM prato_tb p
+  LEFT JOIN votacao_tb v
+    ON p.id_prato = v.id_prato
+    AND DATE(v.data_voto) = CURRENT_DATE
+  WHERE DATE(p.dia) = CURRENT_DATE
+  GROUP BY p.id_prato, p.principal
+  ORDER BY p.id_prato
+`);
+
+    const resultadoConvertido = resultado.map((r: ResultadoVotacao) => ({
       id_prato: r.id_prato,
       principal: r.principal,
       votos_sim: Number(r.votos_sim),
